@@ -20,10 +20,10 @@ rootProject.allprojects {
 }
 apply plugin: 'com.android.library'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
