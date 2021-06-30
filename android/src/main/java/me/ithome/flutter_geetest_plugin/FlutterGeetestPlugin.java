@@ -64,6 +64,7 @@ public class FlutterGeetestPlugin implements MethodCallHandler {
     // 设置webview请求超时(用户点选或滑动完成，前端请求后端接口)，单位毫秒，默认10000
     gt3ConfigBean.setWebviewTimeout(10000);
     // 设置回调监听
+    gt3ConfigBean.s
     gt3ConfigBean.setListener(
         new GT3Listener() {
           /**
@@ -149,43 +150,43 @@ public class FlutterGeetestPlugin implements MethodCallHandler {
         captchaURL = call.argument("api1");
         validateURL = call.argument("api2");
         // 开启验证
-        gt3GeetestUtils.startCustomFlow();
-        //        gt3GeetestUtils.getGeetest(
-        //            mRegistrar.activeContext(),
-        //            url,
-        //            validateURL,
-        //            null,
-        //            new GT3GeetestBindListener() {
-        //
-        //              @Override
-        //              public boolean gt3SetIsCustom() {
-        //                return false;
-        //              }
-        //
-        //              @Override
-        //              public void gt3GetDialogResult(String json) {
-        //                super.gt3GetDialogResult(json);
-        //                try {
-        //                  JSONObject jsonObject = new JSONObject(json);
-        //                  String gt3Challenge = jsonObject.getString("geetest_challenge");
-        //                  String gt3Validate = jsonObject.getString("geetest_validate");
-        //                  String gt3Seccode = jsonObject.getString("geetest_seccode");
-        //                  result.success(json);
-        //                  Log.i("gt3", "gt3GetDialogResult-->" + gt3Challenge + " " +
-        // gt3Validate);
-        //                  gt3GeetestUtils.gt3TestFinish();
-        //                } catch (JSONException e) {
-        //                  gt3GeetestUtils.gt3TestClose();
-        //                  e.printStackTrace();
-        //                }
-        //              }
-        //
-        //              @Override
-        //              public void gt3DialogOnError(String s) {
-        //                super.gt3DialogOnError(s);
-        //              }
-        //            });
-        //        gt3GeetestUtils.setDialogTouch(false);
+        // gt3GeetestUtils.startCustomFlow();
+               gt3GeetestUtils.getGeetest(
+                   mRegistrar.activeContext(),
+                   url,
+                   validateURL,
+                   null,
+                   new GT3GeetestBindListener() {
+        
+                     @Override
+                     public boolean gt3SetIsCustom() {
+                       return false;
+                     }
+        
+                     @Override
+                     public void gt3GetDialogResult(String json) {
+                       super.gt3GetDialogResult(json);
+                       try {
+                         JSONObject jsonObject = new JSONObject(json);
+                         String gt3Challenge = jsonObject.getString("geetest_challenge");
+                         String gt3Validate = jsonObject.getString("geetest_validate");
+                         String gt3Seccode = jsonObject.getString("geetest_seccode");
+                         result.success(json);
+                         Log.i("gt3", "gt3GetDialogResult-->" + gt3Challenge + " " +
+        gt3Validate);
+                         gt3GeetestUtils.gt3TestFinish();
+                       } catch (JSONException e) {
+                         gt3GeetestUtils.gt3TestClose();
+                         e.printStackTrace();
+                       }
+                     }
+        
+                     @Override
+                     public void gt3DialogOnError(String s) {
+                       super.gt3DialogOnError(s);
+                     }
+                   });
+               gt3GeetestUtils.setDialogTouch(false);
         break;
       default:
         result.notImplemented();
