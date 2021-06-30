@@ -1,6 +1,6 @@
 name: flutter_geetest_plugin
 description: Geetest(GT3Captcha) Flutter plugin(极验 - a user-friendly CAPTCHA powered by AI. Protect your website and mobile apps against bot traffic. Start your free trial now!).
-version: 2.0.0
+version: 2.0.1
 author: SimonChen <admin@ithome.me>
 edit: Maksym <maks01311994@gmail.com>
 homepage: https://github.com/cikichen/flutter_geetest_plugin
