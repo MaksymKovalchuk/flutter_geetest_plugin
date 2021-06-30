@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.0'
     }
 }
 rootProject.allprojects {
@@ -18,13 +18,16 @@ rootProject.allprojects {
         jcenter()
     }
 }
+
 apply plugin: 'com.android.library'
+
 android {
     compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     lintOptions {
         disable 'InvalidPackage'
