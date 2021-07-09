@@ -1,73 +1,147 @@
-[![pub package](https://img.shields.io/badge/pub-1.0.5-brightgreen.svg)](https://pub.dev/packages/flutter_geetest_plugin) [![Build Status](https://travis-ci.com/cikichen/flutter_geetest_plugin.svg?branch=master)](https://travis-ci.com/cikichen/flutter_geetest_plugin)
+# flutter_geetest
 
-![flutter_geetest_plugin](https://socialify.git.ci/cikichen/flutter_geetest_plugin/image?description=1&font=Inter&forks=1&language=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
+可以在flutter上面使用极验行为验证框架，支持原生极验的自定义配置功能，支持自定义api1步骤、api2步骤、全部使用极验默认流程三种方式。
 
-Geetest Flutter plugin.
+[![preview](https://github.com/Joker-388/flutter-geetest/blob/master/geetest.gif)](http://www.jianshu.com/u/95d5ea0acd19)&nbsp;
 
-## Screenshot
+## 集成
 
-![Screenshot](screenshots/demo.gif)
-
-## Getting Started
-
-Basic function version, waiting for iteration.
-
-## Use this package as a library
-
-### 1. Depend on it
-
-Add this to your package's pubspec.yaml file:
-
-```
+```dart
 dependencies:
-  flutter_geetest_plugin: ^1.0.5
+  flutter_geetest:
+    git: https://github.com/Joker-388/flutter-geetest.git
 ```
 
-### 2. Install it
+## 接口
 
-You can install packages from the command line:
-
-with Flutter:
-
-```
-$ flutter packages get
-```
-
-Alternatively, your editor might support flutter packages get. Check the docs for your editor to learn more.
-
-### 3. Import it
-
-Now in your Dart code, you can use:
-
-```
-import 'package:geetest_plugin/geetest_plugin.dart';
-```
-
-## USAGE
-
-```
-  Future<void> getGeetest() async {
-    String result;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      result = await GeetestPlugin.getGeetest('url: api1', 'url: api2');
-    } on PlatformException {
-//      _json = 'Failed to get platform version.';
+```dart
+   /// 极验sdk版本
+   static Future<String> skdVersion() async {
+     final String version = await _channel.invokeMethod('getPlatformVersion');
+     return version;
+   }
+  
+    /// 启动极验 <br></br>
+    /// String [api1]: api1,SDK代处理的第一次验证接口 <br></br>
+    /// String [api2]: api2,SDK代处理的第二次验证接口 <br></br>
+    /// String [gt]: gt，自行处理api1获取的参数 <br></br>
+    /// String [challenge]: challenge，自行处理api1获取的参数 <br></br>
+    /// String [success]: success，自行处理api1获取的参数 <br></br>
+    /// <br></br>
+    /// {"msg":"xxxx", data:{"xxx":"xxx"}};
+  
+    static Future<Map<String, dynamic>> launchGeetest({String api1 = "", String api2 = "", String gt = "", String challenge = "", int success = -1}) async {
+  
+      var result = await _channel.invokeMethod('launchGeetest', {
+        'api1': api1,
+        'api2': api2,
+        'gt': gt,
+        'challenge': challenge,
+        'success': success,
+      });
+      return json.decode(result);
     }
+  
+```
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+## 获取极验sdk版本
 
-    setState(() {
-      _json = result;
+```dart
+var version = await FlutterGeetest.skdVersion();
+print("Geetest version $version");
+```
+
+## 使用极验默认验证
+
+```dart
+  /// api1+api2
+  void _launchGeetest3() {
+    FlutterGeetest.launchGeetest(
+      api1: 'https://www.geetest.com/demo/gt/register-slide',
+      api2: 'https://www.geetest.com/demo/gt/validate-slide',
+    ).then((data) {
+      print('Flutter_GeetestPlugin: data====>$data');
+      if (data["data"] == null) {
+        String errormsg = data["msg"];
+        _showSnackbarMsg('$errormsg');
+        return;
+      }
+      var result = data["data"];
+      _showSnackbarMsg('$result');
     });
   }
- ```
+```
 
- ## FAQ: 
+## 自定义 注册步骤，使用默认二次验证
 
- 1. [!] The 'Pods-Runner' target has transitive dependencies that include static binaries:
+```dart
+  /// api1结果参数+api2
+  void _launchGeetest4() {
+    api1().then((data){
+      FlutterGeetest.launchGeetest(
+        gt: data['gt'],
+        challenge: data['challenge'],
+        success: data['success'],
+        api2: 'https://www.geetest.com/demo/gt/validate-slide',
+      ).then((data) {
+        print('Flutter_GeetestPlugin: data====>$data');
+        if (data["data"] == null) {
+          String errormsg = data["msg"];
+          _showSnackbarMsg('$errormsg');
+          return;
+        }
+        var result = data["data"];
+        _showSnackbarMsg('$result');
+      });
+    });
+  }
+```
 
- commenting out `use_frameworks`
+## 自定义 二次验证，使用默认注册步骤
+
+```dart
+  /// 仅api1 , 返回结果自行进行二次接口校验
+  void _launchGeetest1() {
+    FlutterGeetest.launchGeetest(
+      api1: 'https://www.geetest.com/demo/gt/register-slide',
+    ).then((data) {
+      print('Flutter_GeetestPlugin: data====>$data');
+      if (data["data"] == null) {
+        String errormsg = data["msg"];
+        _showSnackbarMsg('$errormsg');
+        return;
+      }
+      api2(data["data"]).then((data){
+        print("api2: $data");
+        _showSnackbarMsg('$data');
+      });
+    });
+  }
+```
+
+## 自定义 注册 和 二次验证
+
+```dart
+  /// 仅api1结果参数(gt,challenge,success),参数来自于自行接口获取
+  void _launchGeetest2() {
+    api1().then((data){
+      print("!!!!! $data");
+      FlutterGeetest.launchGeetest(
+        gt: data['gt'],
+        challenge: data['challenge'],
+        success: data['success'],
+      ).then((data) {
+        print('Flutter_GeetestPlugin: data====>$data');
+        if (data["data"] == null) {
+          String errormsg = data["msg"];
+          _showSnackbarMsg('$errormsg');
+          return;
+        }
+        api2(data["data"]).then((data){
+          print("api2: $data");
+          _showSnackbarMsg('$data');
+        });
+      });
+    });
+  }
+```

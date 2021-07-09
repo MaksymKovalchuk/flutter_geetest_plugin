@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flutter_geetest_plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/flutter_geetest_plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flutter_geetest.iml" filepath="$PROJECT_DIR$/.idea/modules/flutter_geetest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mylibrary/flutter_geetest.mylibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/mylibrary/flutter_geetest.mylibrary.iml" />
     </modules>
   </component>
 </project>
